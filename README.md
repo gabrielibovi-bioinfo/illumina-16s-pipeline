@@ -19,7 +19,6 @@ Raw FASTQ (R1 + R2)
     ├── [Step 1] Quality Assessment        → DADA2: plotQualityProfile
     │
     ├── [Step 2] Filter & Trim             → DADA2: filterAndTrim
-    │                                        (maxEE = 3/3, truncLen = 277/217 bp)
     │
     ├── [Step 3] Error Learning & Denoising → DADA2: learnErrors, dada
     │
@@ -92,6 +91,8 @@ Download and update paths in `01_dada2_taxonomy.R` (`PATH_MIDAS` and `PATH_SILVA
 | MiDAS    | 5.3     | [midasfieldguide.org](https://www.midasfieldguide.org/guide/downloads) |
 | SILVA    | 138.2   | [SILVA SSU r138.2](https://www.arb-silva.de/download/archive/qiime) |
 
+Research and choose the best Database for your data.
+
 ---
 
 ## Usage
@@ -104,10 +105,6 @@ Update the database paths at the top of the script:
 ```r
 PATH_MIDAS <- "path/to/DADA2_taxonomy_MiDAS_5.3.fa"
 PATH_SILVA  <- "path/to/SILVA_SSU_r138_2_2024.RData"
-```
-
-```r
-source("R/01_dada2_taxonomy.R")
 ```
 
 **Outputs:**
@@ -123,10 +120,6 @@ inter_files/taxid_silva.rds / ps_silva.rds
 ```
 
 ### Step 2 — Diversity analysis and relative abundance
-
-```r
-source("R/02_diversity_abundance.R")
-```
 
 **Outputs:**
 ```
@@ -160,10 +153,6 @@ output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz
 ```
 
 ### Step 4 — Functional prediction plots
-
-```r
-source("R/04_picrust2_plots.R")
-```
 
 **Outputs:**
 ```
@@ -228,7 +217,7 @@ figuras/func_norm_family_5.tiff
 
 ## Author
 
-**Gabriel Ibovi**
+**Gabrieli Bovi**
 Bioinformatics | Metagenomics | Illumina Amplicon Sequencing
 🔗 [github.com/gabrielibovi-bioinfo](https://github.com/gabrielibovi-bioinfo)
 
