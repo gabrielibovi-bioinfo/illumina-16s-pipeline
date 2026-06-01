@@ -79,7 +79,16 @@ devtools::install_github("jfq3/QsRutils")
 ### PICRUSt2 (Conda)
 
 ```bash
+# Install from bioconda
 conda create -n picrust2 -c bioconda -c conda-forge picrust2
+
+# Install From Source
+wget https://github.com/picrust/picrust2/archive/v2.4.1.tar.gz
+tar xvzf  v2.4.1.tar.gz
+cd picrust2-2.4.1/
+conda env create -f  picrust2-env.yaml
+conda activate picrust2
+pip install --editable .
 ```
 
 ### Databases
@@ -89,7 +98,7 @@ Download and update paths in `01_dada2_taxonomy.R` (`PATH_MIDAS` and `PATH_SILVA
 | Database | Version | Download |
 |----------|---------|----------|
 | MiDAS    | 5.3     | [midasfieldguide.org](https://www.midasfieldguide.org/guide/downloads) |
-| SILVA    | 138.2   | [SILVA SSU r138.2](https://www.arb-silva.de/download/archive/qiime) |
+| SILVA    | 138.2   | [SILVA SSU r138.2](https://www.arb-silva.de/arb-files) |
 
 Research and choose the best Database for your data.
 
@@ -123,12 +132,12 @@ inter_files/taxid_silva.rds / ps_silva.rds
 
 **Outputs:**
 ```
-tabelas/ASV_table_bruto.xlsx
-tabelas/indices_alpha_diversity.xlsx
-figuras/rarecurve_total.tiff
-figuras/taxa_numbers.tiff
-figuras/barra_<rank>.tiff
-figuras/heat_<rank>.tiff
+tables/ASV_table_bruto.xlsx
+tables/indices_alpha_diversity.xlsx
+figures/rarecurve_total.tiff
+figures/taxa_numbers.tiff
+figures/barra_<rank>.tiff
+figures/heat_<rank>.tiff
 ```
 
 ### Step 3 — Export data for PICRUSt2
@@ -156,22 +165,22 @@ output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz
 
 **Outputs:**
 ```
-tabelas/functions_table.xlsx
-figuras/func_norm_family_5.tiff
+tables/functions_table.xlsx
+figures/func_norm_family_5.tiff
 ```
 
 ---
 
 ## Filtering Parameters
 
-| Parameter    | Value        | Step                        |
-|--------------|--------------|-----------------------------|
-| Max N        | 0            | filterAndTrim               |
-| Max EE (F/R) | 3 / 3        | filterAndTrim               |
-| Trim left    | 14 bp (F)    | filterAndTrim (primer removal) |
-| Truncate     | 277 / 217 bp | filterAndTrim               |
-| Min overlap  | 12 bp        | mergePairs                  |
-| Max NSTI     | 2.0          | PICRUSt2 metagenome_pipeline |
+| Parameter    | Value        |
+|--------------|--------------|
+| truncQ       | 2            |
+| Max N        | 0            |
+| Max EE (F/R) | 3 / 3        |
+| Trim left    | 14 bp (F)    |
+| Truncate     | 277 / 217 bp |
+| Min overlap  | 12 bp        |
 
 > Parameters are set for V3–V4 16S amplicons (~460 bp merged). Adjust `truncLen` and `trimLeft` based on your quality profiles and primer lengths.
 
@@ -188,6 +197,8 @@ figuras/func_norm_family_5.tiff
 | PAO     | Polyphosphate-accumulating org.   | K00937, K22468 |
 | DNB     | Denitrifying bacteria             | K00372, K00360, K00367, K00370, K00371, K00373, K00374, K10534 |
 
+Reference article:
+
 ---
 
 ## Tools and References
@@ -195,10 +206,10 @@ figuras/func_norm_family_5.tiff
 | Tool     | Version | Reference |
 |----------|---------|-----------|
 | DADA2    | ≥1.28   | [Callahan et al., 2016](https://doi.org/10.1038/nmeth.3869) |
-| phyloseq | ≥1.38   | [McMurdie & Holmes, 2013](https://doi.org/10.1371/journal.ppat.1003531) |
-| DECIPHER | ≥2.20   | [Wright, 2016](https://doi.org/10.1016/j.jmb.2016.04.020) |
-| MiDAS   | 5.3     | [Karst et al., 2021](https://doi.org/10.1038/s41587-021-01095-3) |
-| SILVA    | 138.2   | [Quast et al., 2013](https://doi.org/10.1093/nar/gks1219) |
+| phyloseq | ≥1.38   | [McMurdie & Holmes, 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061217#abstract0) |
+| DECIPHER | ≥2.20   | [Foreman, J. et al., 2023](https://doi.org/10.1146/annurev-genom-102822-100509) |
+| MiDAS   | 5.3     | [Dueholm et al., 2024](https://www.nature.com/articles/s41467-024-49641-y) |
+| SILVA    | 138.2   | [Chuvochina et al., 2026](https://academic.oup.com/nar/article/54/D1/D334/8326456) |
 | PICRUSt2 | ≥2.5   | [Douglas et al., 2020](https://doi.org/10.1038/s41587-020-0548-6) |
 | vegan    | ≥2.6    | [Oksanen et al., 2022](https://CRAN.R-project.org/package=vegan) |
 
