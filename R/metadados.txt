@@ -1,0 +1,5 @@
+sampleName	sampleName2
+RF1	Inoculum
+RF2	R1
+RF3	R2
+RF4	R3
