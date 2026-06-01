@@ -1,0 +1,29 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Raw and processed sequencing data (never upload)
+data/
+*.fastq.gz
+*.fasta
+*.biom
+
+# Generated results (reproducible from scripts)
+results/
+figuras/
+tabelas/
+inter_files/
+filtered_reads/
+output_picrust/
+*.rds
+*.Rda
+*.xlsx
+*.tsv
+*.tiff
+*.pdf
+
+# OS
+.DS_Store
+Thumbs.db
