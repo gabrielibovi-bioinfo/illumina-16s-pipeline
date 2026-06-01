@@ -15,15 +15,15 @@
 # Input files:
 #   - inter_files/ps_silva.rds
 #   - metadados.txt
-#   - tabelas/ASV_table_bruto.xlsx  (from step 2 export)
+#   - tables/ASV_table.xlsx  (from step 2 export)
 #
 # Output files:
-#   - tabelas/ASV_table_bruto.xlsx
-#   - tabelas/indices_alpha_diversity.xlsx
-#   - figuras/rarecurve_total.tiff
-#   - figuras/taxa_numbers.tiff
-#   - figuras/barra_<rank>.tiff
-#   - figuras/heat_<rank>.tiff
+#   - tables/ASV_table.xlsx
+#   - tables/indices_alpha_diversity.xlsx
+#   - figures/rarecurve.tiff
+#   - figures/taxa_numbers.tiff
+#   - figures/barplot_<rank>.tiff
+#   - figures/heatmap_<rank>.tiff
 ################################################################################
 
 library(phyloseq)
@@ -80,13 +80,13 @@ colnames(merged) <- c("ASV", "Domain", "Phylum", "Class", "Order",
                       "Family", "Genus", "Species", "Sample",
                       "Relative abundance (%)")
 
-# write_xlsx(merged, "tabelas/ASV_table_bruto.xlsx")
+# write_xlsx(merged, "tables/ASV_table_bruto.xlsx")
 
 # ==============================================================================
 # SECTION 3: Rarefaction curves
 # ==============================================================================
 
-# tiff("figuras/rarecurve_total.tiff", width = 3400, height = 2000, res = 300)
+# tiff("figures/rarecurve.tiff", width = 3400, height = 2000, res = 300)
 sample_names_vec <- sample_data(seqtab)[[2]]
 par(cex.axis = 1.6, cex.lab = 1.6)
 
@@ -136,13 +136,13 @@ indices_table <- indices[, c("Samples", "Observed", "Chao1", "ACE",
 
 print(indices_table)
 
-# write_xlsx(indices_table, "tabelas/indices_alpha_diversity.xlsx")
+# write_xlsx(indices_table, "tables/indices_alpha_diversity.xlsx")
 
 # ==============================================================================
 # SECTION 5: Unique taxa count by taxonomic rank and sample
 # ==============================================================================
 
-merged_plot <- read_excel("tabelas/ASV_table_bruto.xlsx")
+merged_plot <- read_excel("tables/ASV_table.xlsx")
 
 tax_levels <- c("Phylum", "Class", "Order", "Family")
 
@@ -184,8 +184,7 @@ taxa_numbers <- ggplot(taxa_counts_df,
   scale_color_manual(values = brewer.pal(n = 4, "PuOr"))
 
 print(taxa_numbers)
-# ggsave("figuras/taxa_numbers.tiff",
-#        plot = taxa_numbers, height = 1200, width = 1600, units = "px", dpi = 310)
+# ggsave("figures/taxa_numbers.tiff",plot = taxa_numbers, height = 1200, width = 1600, units = "px", dpi = 310)
 
 # ==============================================================================
 # SECTION 6: Relative abundance barplot by taxonomic rank
@@ -194,9 +193,9 @@ print(taxa_numbers)
 # --- Settings ---
 hide_unclassified    <- FALSE
 add_others_category  <- TRUE
-min_abundance        <- 3   # minimum % to display a taxon individually
+min_abundance        <- 5   # minimum % to display a taxon individually
 
-# Taxonomic rank (change to: "phylum", "class", "order", "family", "genus")
+# Taxonomic rank (change to: "phylum", "class", "order", "family", "genus" and "species")
 taxrank <- "phylum"
 
 # Agglomerate and build proportions table
@@ -231,7 +230,7 @@ if (add_others_category && min_abundance > 0) {
   )
 }
 
-rank_taxa_proportions     <- apply(asv_filt, 1, function(x) x / sum(x) * 100)
+rank_taxa_proportions <- apply(asv_filt, 1, function(x) x / sum(x) * 100)
 rank_taxa_proportions_non0 <- rank_taxa_proportions[rowSums(rank_taxa_proportions) > 0, ]
 
 tidy_proportions <- reshape2::melt(
@@ -283,11 +282,7 @@ barplot_fig <- ggplot(tidy_proportions) +
 
 print(barplot_fig)
 
-# ggsave("figuras/barra_phylum.tiff", plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
-# ggsave("figuras/barra_class.tiff",  plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
-# ggsave("figuras/barra_order.tiff",  plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
-# ggsave("figuras/barra_family.tiff", plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
-# ggsave("figuras/barra_genus.tiff",  plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
+# ggsave("figures/barplot_phylum.tiff", plot = barplot_fig, height = 1300, width = 2700, units = "px", dpi = 300)
 
 # ==============================================================================
 # SECTION 7: Heatmap of relative abundance by taxonomic rank
@@ -322,8 +317,4 @@ heatmap_fig <- pheatmap(
   angle_col                 = 0
 )
 
-# ggsave("figuras/heat_phylum.tiff", plot = heatmap_fig, height = 1300, width = 1490, units = "px", dpi = 350)
-# ggsave("figuras/heat_class.tiff",  plot = heatmap_fig, height = 1300, width = 1590, units = "px", dpi = 350)
-# ggsave("figuras/heat_order.tiff",  plot = heatmap_fig, height = 1300, width = 1500, units = "px", dpi = 350)
-# ggsave("figuras/heat_family.tiff", plot = heatmap_fig, height = 1300, width = 1500, units = "px", dpi = 350)
-# ggsave("figuras/heat_genus.tiff",  plot = heatmap_fig, height = 1300, width = 1500, units = "px", dpi = 350)
+# ggsave("figures/heatmap_phylum.tiff", plot = heatmap_fig, height = 1300, width = 1490, units = "px", dpi = 350)
