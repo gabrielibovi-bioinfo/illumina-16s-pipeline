@@ -4,6 +4,8 @@
 #              Performs quality filtering, error learning, denoising, chimera
 #              removal, and taxonomic classification with MiDAS and SILVA.
 #
+# For more information, visit: https://benjjneb.github.io/dada2/tutorial.html
+# 
 # Steps performed:
 #   1. Define directories and list raw FASTQ files
 #   2. Quality assessment before filtering (QualityProfile plots)
@@ -115,6 +117,7 @@ out <- filterAndTrim(
   verbose   = TRUE
 )
 
+head(out)
 saveRDS(out, paste0(intermediate_folder, "/out.rds"))
 
 # Quality assessment — after filtering
@@ -130,6 +133,8 @@ saveRDS(errF, paste0(intermediate_folder, "/errF.rds"))
 
 errR <- learnErrors(filtRs, multithread = TRUE)
 saveRDS(errR, paste0(intermediate_folder, "/errR.rds"))
+
+plotErrors(errF, nominalQ=TRUE)
 
 # ==============================================================================
 # SECTION 5: Denoise reads with DADA2
@@ -190,36 +195,13 @@ track_df$nonchim_percent <- track_df$nonchim * 100 / track_df$input
 print(track_df)
 save(track_df, file = paste0(intermediate_folder, "/track_df.Rda"))
 
+ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species")
+
 gc()
 
 # ==============================================================================
-# SECTION 9: Taxonomic assignment — MiDAS 5.3
+# SECTION 9: Taxonomic assignment — SILVA 138.2 (IDTAXA method)
 # ==============================================================================
-
-taxid_midas <- assignTaxonomy(seqtabNoC, PATH_MIDAS, multithread = TRUE)
-ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species")
-colnames(taxid_midas) <- ranks
-
-saveRDS(taxid_midas, paste0(intermediate_folder, "/taxid_midas.rds"))
-
-# Build phyloseq object
-ps_midas <- phyloseq(
-  otu_table(seqtabNoC, taxa_are_rows = FALSE),
-  tax_table(taxid_midas)
-)
-
-dna_midas <- Biostrings::DNAStringSet(taxa_names(ps_midas))
-names(dna_midas) <- taxa_names(ps_midas)
-ps_midas <- merge_phyloseq(ps_midas, dna_midas)
-taxa_names(ps_midas) <- paste0("ASV", seq(ntaxa(ps_midas)))
-
-saveRDS(ps_midas, paste0(intermediate_folder, "/ps_midas.rds"))
-print(paste0("Done! Phyloseq object saved to >> ", intermediate_folder, "/ps_midas.rds <<"))
-
-# ==============================================================================
-# SECTION 10: Taxonomic assignment — SILVA 138.2 (IDTAXA method)
-# ==============================================================================
-
 dna <- DNAStringSet(getSequences(seqtabNoC))
 load(PATH_SILVA)
 
@@ -248,4 +230,27 @@ ps_silva <- merge_phyloseq(ps_silva, dna_silva)
 taxa_names(ps_silva) <- paste0("ASV", seq(ntaxa(ps_silva)))
 
 saveRDS(ps_silva, paste0(intermediate_folder, "/ps_silva.rds"))
-print(paste0("Done! Phyloseq object saved to >> ", intermediate_folder, "/ps_silva.rds <<"))
+print(paste0("Phyloseq object saved to >> ", intermediate_folder, "/ps_silva.rds <<"))
+
+# ==============================================================================
+# SECTION 10: Taxonomic assignment — MiDAS 5.3
+# ==============================================================================
+
+taxid_midas <- assignTaxonomy(seqtabNoC, PATH_MIDAS, multithread = TRUE)
+colnames(taxid_midas) <- ranks
+
+saveRDS(taxid_midas, paste0(intermediate_folder, "/taxid_midas.rds"))
+
+# Build phyloseq object
+ps_midas <- phyloseq(
+  otu_table(seqtabNoC, taxa_are_rows = FALSE),
+  tax_table(taxid_midas)
+)
+
+dna_midas <- Biostrings::DNAStringSet(taxa_names(ps_midas))
+names(dna_midas) <- taxa_names(ps_midas)
+ps_midas <- merge_phyloseq(ps_midas, dna_midas)
+taxa_names(ps_midas) <- paste0("ASV", seq(ntaxa(ps_midas)))
+
+saveRDS(ps_midas, paste0(intermediate_folder, "/ps_midas.rds"))
+print(paste0("Done! Phyloseq object saved to >> ", intermediate_folder, "/ps_midas.rds <<"))
