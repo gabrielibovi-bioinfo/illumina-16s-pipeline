@@ -45,8 +45,8 @@ illumina-16s-pipeline/
 │   ├── 02_diversity_abundance.R     # Rarefaction, alpha diversity, barplots, heatmaps
 │   ├── 03_picrust2_preparation.R    # Export FASTA + BIOM for PICRUSt2
 │   └── 04_picrust2_plots.R          # PICRUSt2 functional abundance barplots
-├── data/                            # Place raw .fastq.gz files here (gitignored)
-├── results/                         # Output files (gitignored)
+├── data/                            # Place raw .fastq.gz files here
+├── results/                         # Output files
 ├── README.md
 ├── .gitignore
 └── LICENSE
@@ -82,7 +82,7 @@ devtools::install_github("jfq3/QsRutils")
 # Install from bioconda
 conda create -n picrust2 -c bioconda -c conda-forge picrust2
 
-# Install From Source
+# Install from source
 wget https://github.com/picrust/picrust2/archive/v2.4.1.tar.gz
 tar xvzf  v2.4.1.tar.gz
 cd picrust2-2.4.1/
@@ -132,12 +132,12 @@ inter_files/taxid_silva.rds / ps_silva.rds
 
 **Outputs:**
 ```
-tables/ASV_table_bruto.xlsx
+tables/ASV_table.xlsx
 tables/indices_alpha_diversity.xlsx
 figures/rarecurve_total.tiff
 figures/taxa_numbers.tiff
-figures/barra_<rank>.tiff
-figures/heat_<rank>.tiff
+figures/barplot_<rank>.tiff
+figures/heatmap_<rank>.tiff
 ```
 
 ### Step 3 — Export data for PICRUSt2
@@ -166,7 +166,7 @@ output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz
 **Outputs:**
 ```
 tables/functions_table.xlsx
-figures/func_norm_family_5.tiff
+figures/func_norm_family.tiff
 ```
 
 ---
