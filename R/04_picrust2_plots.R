@@ -19,8 +19,8 @@
 #   - output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz
 #
 # Output files:
-#   - tabelas/functions_table.xlsx
-#   - figuras/func_norm_family_5.tiff
+#   - tables/functions_table.xlsx
+#   - figures/func_norm_family.tiff
 ################################################################################
 
 library(tidyverse)
@@ -55,24 +55,23 @@ sample_data(seqtab) <- as.data.frame(samdf)
 # SECTION 2: Define functional KO groups
 # ==============================================================================
 
+# Ammonia-oxidizing bacteria pathways
 AOB    <- c("K10944", "K10945", "K10946", "K10535", "K05601", "K15864")
-# ammonia monooxygenase (AMO), hydroxylamine oxidoreductase (HAO)
 
+# Nitrite-oxidizing bacteria pathways
 NOB    <- c("K00370", "K00371")
-# nitrite oxidoreductase (NOR/NXR)
 
+# Anaerobic ammonium oxidation pathways
 ANAMMOX <- c("K20932", "K20933", "K20934", "K20935")
-# hydrazine hydrolase, hydrazine dehydrogenase
 
+# Glycogen-accumulating organisms pathways
 GAO    <- c("K20812", "K00975", "K00688", "K02438")
-# glycogen synthase (glgA), glucose-1-phosphate adenylyltransferase (glgC),
-# glycogen phosphorylase (glgP), glycogen debranching enzyme (glgX)
 
+# Polyphosphate-accumulating org. pathways
 PAO    <- c("K00937", "K22468")
-# polyphosphate kinase (ppk, ppk2)
 
+# Denitrifying bacteria pathways
 DNB    <- c("K00372", "K00360", "K00367", "K00370", "K00371", "K00373", "K00374", "K10534")
-# assimilatory nitrate reductase (nasA, nasB) and related subunits
 
 ko_ids  <- c(AOB, NOB, ANAMMOX, GAO, PAO, DNB)
 groups  <- c(rep("AOB", length(AOB)), rep("NOB", length(NOB)),
@@ -99,10 +98,7 @@ sample_info <- data.frame(sample_data(seqtab))
 # SECTION 4: Load PICRUSt2 output and build functional abundance table
 # ==============================================================================
 
-ko_table <- read.table(
-  "output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz",
-  fill = TRUE, header = TRUE
-)
+ko_table <- read.table("output_picrust/KO_metagenome_out/pred_metagenome_contrib.tsv.gz",fill = TRUE, header = TRUE)
 
 func_table <- ko_table %>%
   merge(KOs, by.x = "function.", by.y = "ko") %>%
@@ -111,19 +107,11 @@ func_table <- ko_table %>%
   merge(sample_info, by.x = "sample", by.y = "sampleName") %>%
   group_by(sample, group, domain, phylum, class, order, family, genus) %>%
   summarize(abundance = sum(norm_taxon_function_contrib), .groups = "drop") %>%
-  select(
-    Domain   = domain,
-    Phylum   = phylum,
-    Class    = class,
-    Order    = order,
-    Family   = family,
-    Genus    = genus,
-    Sample   = sample,
-    Group    = group,
-    Abundance = abundance
+  select(Domain = domain, Phylum = phylum, Class = class, Order = order, Family = family, Genus = genus,
+    Sample = sample, Group = group, Abundance = abundance
   )
 
-# write_xlsx(func_table, "tabelas/functions_table.xlsx")
+# write_xlsx(func_table, "tables/functions_table.xlsx")
 
 # ==============================================================================
 # SECTION 5: Filter top 5 families by total abundance
@@ -179,5 +167,4 @@ func_barplot <- ggplot(func_table_top5,
   )
 
 print(func_barplot)
-# ggsave("figuras/func_norm_family_5.tiff",
-#        plot = func_barplot, width = 2900, height = 1400, units = "px", dpi = 310)
+# ggsave("figures/func_norm_family.tiff",plot = func_barplot, width = 2900, height = 1400, units = "px", dpi = 310)
