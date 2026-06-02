@@ -135,6 +135,7 @@ errR <- learnErrors(filtRs, multithread = TRUE)
 saveRDS(errR, paste0(intermediate_folder, "/errR.rds"))
 
 plotErrors(errF, nominalQ=TRUE)
+plotErrors(errR, nominalQ=TRUE)
 
 # ==============================================================================
 # SECTION 5: Denoise reads with DADA2
