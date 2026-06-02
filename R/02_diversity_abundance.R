@@ -138,6 +138,14 @@ print(indices_table)
 
 # write_xlsx(indices_table, "tables/indices_alpha_diversity.xlsx")
 
+# Diversidade beta
+ordination <- ordinate(seqtab, method="NMDS", distance="bray")
+plot_ordination(seqtab, ordination, color="sampleName")
+
+ordination <- ordinate(seqtab, method="PCoA", distance="bray")
+plot_beta <- plot_ordination(seqtab, ordination, color="sampleName")
+plot_beta
+
 # ==============================================================================
 # SECTION 5: Unique taxa count by taxonomic rank and sample
 # ==============================================================================
