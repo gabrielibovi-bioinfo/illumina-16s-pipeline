@@ -123,6 +123,7 @@ for (i in seq_along(rarecurve_data)) {
 # SECTION 4: Alpha diversity indices
 # ==============================================================================
 
+# Alpha
 a <- goods(otu_table(seqtab)) %>% rownames_to_column(var = "Samples")
 b <- estimate_richness(seqtab,
        measures = c("Observed", "Chao1", "ACE", "Shannon",
@@ -135,16 +136,16 @@ indices_table <- indices[, c("Samples", "Observed", "Chao1", "ACE",
                              "Fisher", "no.seqs")]
 
 print(indices_table)
-
 # write_xlsx(indices_table, "tables/indices_alpha_diversity.xlsx")
 
-# Diversidade beta
-ordination <- ordinate(seqtab, method="NMDS", distance="bray")
-plot_ordination(seqtab, ordination, color="sampleName")
+# Beta
+ordination_NMDS <- ordinate(seqtab, method="NMDS", distance="bray")
+plot_beta_NMDS <- plot_ordination(seqtab, ordination_NMDS, color="sampleName2")
+plot_beta_NMDS
 
-ordination <- ordinate(seqtab, method="PCoA", distance="bray")
-plot_beta <- plot_ordination(seqtab, ordination, color="sampleName")
-plot_beta
+ordination_PCoA <- ordinate(seqtab, method="PCoA", distance="bray")
+plot_beta_PCoA <- plot_ordination(seqtab, ordination_PCoA, color="sampleName2")
+plot_beta_PCoA
 
 # ==============================================================================
 # SECTION 5: Unique taxa count by taxonomic rank and sample
