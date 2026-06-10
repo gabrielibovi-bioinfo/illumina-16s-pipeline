@@ -80,7 +80,7 @@ colnames(merged) <- c("ASV", "Domain", "Phylum", "Class", "Order",
                       "Family", "Genus", "Species", "Sample",
                       "Relative abundance (%)")
 
-# write_xlsx(merged, "tables/ASV_table_bruto.xlsx")
+# write_xlsx(merged, "tables/ASV_table.xlsx")
 
 # ==============================================================================
 # SECTION 3: Rarefaction curves
